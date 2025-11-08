@@ -70,3 +70,22 @@ class TransactionManager:
         print(f"Total harga: Rp {total:.2f}")
         print(f"Profit transaksi: Rp {profit:.2f}")
         print(f"Stok tersisa: {p.stok}")
+
+    def view_transactions(self, filter_date=None):
+        if not self.transactions:
+            print("Belum ada transaksi.")
+            return
+        filtered = self.transactions
+        if filter_date:
+            try:
+                filter_dt = datetime.strptime(filter_date, "%Y-%m-%d").date()
+                filtered = [t for t in self.transactions if datetime.fromisoformat(t.time).date() == filter_dt]
+            except ValueError:
+                print("Format tanggal salah (gunakan YYYY-MM-DD). Menampilkan semua.")
+        print("\nRiwayat Transaksi:")
+        print("{:<4} {:<20} {:<20} {:>5} {:>10} {:>10} {:<10}".format(
+            "ID", "Waktu", "Produk", "Qty", "Total", "Profit", "Kasir"))
+        for t in filtered:
+            print("{:<4} {:<20} {:<20} {:>5} {:>10.2f} {:>10.2f} {:<10}".format(
+                t.id, t.time, t.product_name, t.qty, t.total, t.profit, t.cashier))
+        print()
